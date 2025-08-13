@@ -1,4 +1,3 @@
-/* --- ROOT VARIABLES & THEMES --- */
 :root {
     --bg: #ffffff;
     --text: #1d2129;
@@ -7,7 +6,6 @@
     --sidebar-bg: rgba(255, 255, 255, 0.7);
     --border: #e0e0e0;
     --accent-color: #7b2cbf;
-    /* Обновлен градиент на чисто фиолетовый */
     --sidebar-title-gradient: linear-gradient(45deg, #8e44ad, #7b2cbf);
     --code-bg: #f5f7fa;
     --link-hover-bg: #f0f2f5;
@@ -16,7 +14,6 @@
     --highlight-bg: #e0cffc;
     --highlight-text: #1d2129;
     --shadow: rgba(0, 0, 0, 0.08);
-
     --lua-keyword: #d73a49;
     --lua-function: #6f42c1;
     --lua-string: #032f62;
@@ -33,7 +30,6 @@ html[data-theme='dark'] {
     --sidebar-bg: rgba(18, 18, 18, 0.7);
     --border: #333333;
     --accent-color: #c778dd;
-    /* Обновлен градиент на чисто фиолетовый для темной темы */
     --sidebar-title-gradient: linear-gradient(45deg, #9b59b6, #c778dd);
     --code-bg: #1e1e1e;
     --link-hover-bg: #2a2a2a;
@@ -42,7 +38,6 @@ html[data-theme='dark'] {
     --highlight-bg: #382d47;
     --highlight-text: #f0f6fc;
     --shadow: rgba(0, 0, 0, 0.4);
-
     --lua-keyword: #c678dd;
     --lua-function: #61afef;
     --lua-string: #98c379;
@@ -51,13 +46,11 @@ html[data-theme='dark'] {
     --lua-variable: #e06c75;
 }
 
-/* --- ANIMATIONS & GENERAL SETUP --- */
 @keyframes fadeIn {
     from {
         opacity: 0;
         transform: translateY(15px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -68,7 +61,6 @@ html[data-theme='dark'] {
     from {
         background-position: 0% 0%;
     }
-
     to {
         background-position: 100% 100%;
     }
@@ -78,7 +70,6 @@ html[data-theme='dark'] {
     0% {
         background-position: -200% 0;
     }
-
     100% {
         background-position: 200% 0;
     }
@@ -125,7 +116,6 @@ body::before {
     height: 50vh;
     z-index: -2;
     pointer-events: none;
-    
     background: radial-gradient(ellipse at 50% 0%, rgba(199, 120, 221, 0.2), transparent 70%);
     filter: blur(40px);
     opacity: 0;
@@ -145,12 +135,9 @@ body::after {
     bottom: 0;
     z-index: -1;
     pointer-events: none;
-    
     background-image: var(--blueprint-url);
-    
     mask-image: radial-gradient(ellipse 80% 90% at 50% -15%, black 15%, transparent 60%);
     -webkit-mask-image: radial-gradient(ellipse 80% 90% at 50% -15%, black 15%, transparent 60%);
-    
     animation: pan-bg 120s linear infinite alternate;
     transition: opacity 0.3s;
 }
@@ -163,7 +150,6 @@ html[data-theme='light'] body::after {
     opacity: 0.2;
 }
 
-/* --- SCROLLBAR --- */
 ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
@@ -183,7 +169,6 @@ html[data-theme='light'] body::after {
     background-color: var(--accent-color);
 }
 
-/* --- LAYOUT --- */
 .layout-grid {
     display: grid;
     grid-template-columns: 260px 1fr;
@@ -206,7 +191,6 @@ header {
     margin: 0 auto;
 }
 
-/* --- HEADER --- */
 header {
     position: fixed;
     top: 0;
@@ -360,7 +344,6 @@ header {
     fill: currentColor;
 }
 
-
 .theme-toggle,
 .hamburger-btn {
     background: none;
@@ -379,7 +362,6 @@ header {
     z-index: 102;
 }
 
-/* --- SIDEBAR --- */
 .sidebar {
     height: 100vh;
     position: sticky;
@@ -433,12 +415,10 @@ header {
     width: 3px;
     background: var(--accent-color);
     box-shadow: 0 0 8px var(--accent-color);
-    /* Добавлено скругление */
     border-radius: 3px;
 }
 
 #toc-nav-container a.toc-category {
-    /* Используем новую переменную для градиента */
     background: var(--sidebar-title-gradient);
     -webkit-background-clip: text;
     background-clip: text;
@@ -449,7 +429,6 @@ header {
     font-size: 15px;
 }
 
-/* --- MAIN CONTENT --- */
 .content-wrapper {
     padding-top: 80px;
 }
@@ -470,10 +449,9 @@ h3 {
     transition: color 0.5s ease;
 }
 
-/* Убран hover эффект с градиентом */
 h2:hover,
 h3:hover {
-   color: var(--text); /* Остается обычный цвет текста */
+   color: var(--text);
 }
 
 h2 {
@@ -563,7 +541,6 @@ p a:hover::after {
     transform-origin: bottom left;
 }
 
-/* --- CODE & OTHER ELEMENTS --- */
 .code-block {
     position: relative;
     background-color: var(--code-bg);
@@ -574,6 +551,7 @@ p a:hover::after {
     overflow: hidden;
     transition: box-shadow 0.3s ease;
 }
+
 .code-block:hover {
     box-shadow: 0 4px 15px var(--shadow);
 }
@@ -657,7 +635,6 @@ footer {
     color: var(--lua-variable) !important;
 }
 
-/* --- MOBILE OVERLAY --- */
 #mobile-menu-overlay {
     position: fixed;
     top: 0;
@@ -676,16 +653,13 @@ footer {
     visibility: visible;
 }
 
-/* --- RESPONSIVE DESIGN --- */
 @media (max-width: 1024px) {
     .layout-grid {
         grid-template-columns: 240px 1fr;
     }
-
     h2 {
         font-size: 2rem;
     }
-
     h3 {
         font-size: 1.4rem;
     }
@@ -696,11 +670,9 @@ footer {
         grid-template-columns: 1fr;
         grid-template-areas: "header" "content";
     }
-
     .content-wrapper {
         padding: 0 1.5rem;
     }
-
     .logo,
     .header-nav a {
         display: none;
@@ -708,15 +680,12 @@ footer {
      .header-nav a[title="Telegram Channel"] {
         display: flex;
     }
-
     .hamburger-btn {
         display: flex;
     }
-
     .search-wrapper {
         max-width: none;
     }
-
     .sidebar-toc {
         position: fixed;
         top: 0;
@@ -728,15 +697,12 @@ footer {
         border-right: 1px solid var(--border);
         box-shadow: 4px 0 15px var(--shadow);
     }
-
     .sidebar-toc.active {
         transform: translateX(0);
     }
-
     h2 {
         font-size: 1.8rem;
     }
-
     h3 {
         font-size: 1.3rem;
     }
