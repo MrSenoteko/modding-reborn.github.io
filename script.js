@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Global Variables ---
+    // --- Initialization ---
     const themeToggle = document.getElementById('theme-toggle');
     const sunIcon = document.getElementById('theme-icon-sun');
     const moonIcon = document.getElementById('theme-icon-moon');
@@ -7,16 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const searchResultsContainer = document.getElementById('search-results');
     const tocNavContainer = document.getElementById('toc-nav-container');
+    const allHeadings = Array.from(document.querySelectorAll('main h2, main h3'));
+    let searchIndex = [];
+
+    // --- Mobile Menu ---
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const mobileMenu = document.getElementById('toc-nav');
     const overlay = document.getElementById('mobile-menu-overlay');
     const body = document.body;
-    const mainContent = document.getElementById('main-content');
-    
-    let searchIndex = [];
-    let allHeadings = [];
 
-    // --- Mobile Menu ---
     const toggleMenu = () => {
         mobileMenu.classList.toggle('active');
         overlay.classList.toggle('active');
@@ -26,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     hamburgerBtn.addEventListener('click', toggleMenu);
     overlay.addEventListener('click', toggleMenu);
 
+
     // --- Theme Toggler ---
     const applyTheme = (theme) => {
         html.setAttribute('data-theme', theme);
@@ -33,93 +33,24 @@ document.addEventListener('DOMContentLoaded', () => {
         sunIcon.style.display = theme === 'dark' ? 'none' : 'block';
         moonIcon.style.display = theme === 'dark' ? 'block' : 'none';
     };
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    applyTheme(savedTheme);
+    themeToggle.addEventListener('click', () => {
+        applyTheme(html.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    });
 
-    // --- Content Rendering ---
-    const renderContent = async () => {
-        try {
-            const response = await fetch('content.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            
-            mainContent.innerHTML = ''; // Clear existing content
-
-            data.sections.forEach(sectionData => {
-                const sectionEl = document.createElement('section');
-                sectionEl.id = sectionData.id;
-
-                const h2 = document.createElement('h2');
-                h2.textContent = sectionData.title;
-                h2.id = sectionData.id; // Assign ID for scrollspy
-                sectionEl.appendChild(h2);
-
-                sectionData.topics.forEach(topicData => {
-                    const topicBlock = document.createElement('div');
-                    topicBlock.className = 'topic-block';
-
-                    if (topicData.title) {
-                        const h3 = document.createElement('h3');
-                        h3.id = topicData.id;
-                        if(topicData.icon) h3.innerHTML += topicData.icon;
-                        const titleText = document.createElement('span');
-                        titleText.textContent = topicData.title;
-                        h3.appendChild(titleText);
-                        topicBlock.appendChild(h3);
-                    }
-                    
-                    if (topicData.content.description) {
-                        const p = document.createElement('p');
-                        p.innerHTML = topicData.content.description;
-                        topicBlock.appendChild(p);
-                    }
-
-                    if (topicData.content.code) {
-                        const codeBlock = document.createElement('div');
-                        codeBlock.className = 'code-block';
-                        
-                        const pre = document.createElement('pre');
-                        pre.innerHTML = topicData.content.code;
-
-                        const copyBtn = document.createElement('button');
-                        copyBtn.className = 'copy-btn';
-                        copyBtn.textContent = 'Copy';
-                        
-                        codeBlock.appendChild(copyBtn);
-                        codeBlock.appendChild(pre);
-                        topicBlock.appendChild(codeBlock);
-                    }
-                    sectionEl.appendChild(topicBlock);
-                });
-                mainContent.appendChild(sectionEl);
-            });
-            
-            initializePageFunctions();
-
-        } catch (error) {
-            mainContent.innerHTML = `<p style="color: red;">Failed to load page content: ${error.message}</p>`;
-            console.error('Error fetching or rendering content:', error);
-        }
-    };
-    
-    const initializePageFunctions = () => {
-        allHeadings = Array.from(document.querySelectorAll('main h2, main h3'));
-        
-        document.querySelectorAll('.copy-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const pre = e.currentTarget.closest('.code-block').querySelector('pre');
-                navigator.clipboard.writeText(pre.innerText).then(() => {
-                    button.innerText = 'Copied!';
-                    setTimeout(() => { button.innerText = 'Copy'; }, 2000);
-                });
+    // --- Copy Button ---
+    document.querySelectorAll('.copy-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const pre = e.currentTarget.closest('.code-block').querySelector('pre');
+            navigator.clipboard.writeText(pre.innerText).then(() => {
+                button.innerText = 'Copied!';
+                setTimeout(() => { button.innerText = 'Copy'; }, 2000);
             });
         });
-
-        buildSearchIndex();
-        updateTocNav();
-        setupObservers();
-    };
-
+    });
+    
+    // --- Search Functionality ---
     const buildSearchIndex = () => {
         searchIndex = [];
         document.querySelectorAll('main section').forEach(section => {
@@ -189,13 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
             searchResultsContainer.style.display = 'none';
         }
     };
-    
+
     searchInput.addEventListener('input', (e) => performSearch(e.target.value));
     searchInput.addEventListener('focus', (e) => performSearch(e.target.value));
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.search-wrapper')) searchResultsContainer.style.display = 'none';
     });
-
+    
+    // --- Navigation and Scrollspy ---
     const updateTocNav = () => {
         tocNavContainer.innerHTML = '';
         allHeadings.forEach(h => {
@@ -207,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
              
              a.addEventListener('click', (e) => {
                  e.preventDefault();
+                 // Close mobile menu if open
                  if (mobileMenu.classList.contains('active')) {
                      toggleMenu();
                  }
@@ -223,41 +156,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     
-    const setupObservers = () => {
-        const scrollObserver = new IntersectionObserver((entries) => {
-            let intersectingHeadings = [];
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    intersectingHeadings.push(entry.target);
-                }
-            });
-
-            if (intersectingHeadings.length > 0) {
-                intersectingHeadings.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
-                const topmostId = intersectingHeadings[0].id;
-                tocNavContainer.querySelectorAll('a').forEach(a => a.classList.remove('active'));
-                const activeLink = tocNavContainer.querySelector(`a[href="#${topmostId}"]`);
-                if(activeLink) activeLink.classList.add('active');
+    const scrollObserver = new IntersectionObserver((entries) => {
+        let intersectingHeadings = [];
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                intersectingHeadings.push(entry.target);
             }
-        }, { rootMargin: '-80px 0px -75% 0px', threshold: 0.1 });
-        allHeadings.forEach(h => scrollObserver.observe(h));
-        
-        const animationObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    animationObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-        document.querySelectorAll('.topic-block').forEach(el => animationObserver.observe(el));
-    }
+        });
 
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    applyTheme(savedTheme);
-    themeToggle.addEventListener('click', () => {
-        applyTheme(html.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-    });
-
-    renderContent();
+        if (intersectingHeadings.length > 0) {
+            intersectingHeadings.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
+            const topmostId = intersectingHeadings[0].id;
+            tocNavContainer.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+            const activeLink = tocNavContainer.querySelector(`a[href="#${topmostId}"]`);
+            if(activeLink) activeLink.classList.add('active');
+        }
+    }, { rootMargin: '-80px 0px -75% 0px', threshold: 0.1 });
+    allHeadings.forEach(h => scrollObserver.observe(h));
+    
+    const animationObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                animationObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+    document.querySelectorAll('.topic-block').forEach(el => animationObserver.observe(el));
+    
+    buildSearchIndex();
+    updateTocNav();
 });
