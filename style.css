@@ -70,13 +70,23 @@ html[data-theme='dark'] {
     }
 }
 
-@keyframes shimmer {
-    0% {
-        background-position: -200% 0;
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
     }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 
-    100% {
-        background-position: 200% 0;
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
     }
 }
 
@@ -798,6 +808,79 @@ footer {
     visibility: visible;
 }
 
+.status-badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.2em 0.6em;
+    border-radius: 2em;
+    vertical-align: middle;
+    margin-left: 0.5em;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.status-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow);
+}
+
+.status-badge.not-working {
+    background-color: #ffcdd2;
+    color: #b71c1c;
+    border: 1px solid #ef9a9a;
+}
+
+html[data-theme='dark'] .status-badge.not-working {
+    background-color: #3e2723;
+    color: #ffccbc;
+    border: 1px solid #8d6e63;
+}
+
+#toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background-color: var(--sidebar-bg);
+    color: var(--text);
+    padding: 12px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 12px var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    max-width: 350px;
+}
+
+.toast.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+.toast .icon {
+    width: 20px;
+    height: 20px;
+    stroke: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.toast p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
 @media (max-width: 1024px) {
     .layout-grid {
         grid-template-columns: 240px 1fr;
@@ -826,7 +909,9 @@ footer {
     .header-nav a {
         display: none;
     }
-     .header-nav a[title="Telegram Channel"] {
+    
+    .header-nav a[title="Telegram Channel"],
+    .header-nav a[title="Lua Documentation"] {
         display: flex;
     }
 
@@ -835,7 +920,7 @@ footer {
     }
 
     .search-wrapper {
-        max-width: none;
+        max-width: calc(100% - 150px);
     }
 
     .sidebar-toc {
