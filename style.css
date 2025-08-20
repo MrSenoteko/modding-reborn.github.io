@@ -48,6 +48,40 @@ html[data-theme='dark'] {
     --lua-variable: #e06c75;
 }
 
+html[data-theme='one_ru'] {
+    --bg: #101820;
+    --text: #e0e0e0;
+    --text-secondary: #98a2b3;
+    --header-bg: rgba(16, 24, 32, 0.7);
+    --sidebar-bg: rgba(16, 24, 32, 0.7);
+    --border: #344054;
+    --accent-color: #0de89c;
+    --sidebar-title-gradient: linear-gradient(45deg, #0075e8, #0de89c);
+    --code-bg: #1d2939;
+    --link-hover-bg: #344054;
+    --search-bg: #101820;
+    --search-border: #344054;
+    --highlight-bg: rgba(13, 232, 156, 0.1);
+    --highlight-text: #f0f6fc;
+    --shadow: rgba(0, 0, 0, 0.4);
+
+    --lua-keyword: #c678dd;
+    --lua-function: #61afef;
+    --lua-string: #98c379;
+    --lua-number: #d19a66;
+    --lua-comment: #5c6370;
+    --lua-variable: #e06c75;
+}
+
+html[data-theme='one_ru'] #toc-nav-container a.active {
+    color: var(--accent-color);
+    border-left-color: var(--accent-color);
+}
+html[data-theme='one_ru'] #toc-nav-container a.active::before {
+    background: var(--accent-color);
+    box-shadow: 0 0 8px var(--accent-color);
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -141,6 +175,12 @@ body::before {
 html[data-theme='dark'] body::before {
     opacity: 1;
 }
+
+html[data-theme='one_ru'] body::before {
+    background: radial-gradient(ellipse at 50% 0%, rgba(13, 232, 156, 0.2), transparent 70%);
+    opacity: 1;
+}
+
 
 body::after {
     content: '';
@@ -552,6 +592,11 @@ p a::after {
     transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+html[data-theme='one_ru'] p a::after {
+    background: var(--sidebar-title-gradient);
+}
+
+
 p a:hover {
     color: var(--accent-color);
 }
@@ -729,7 +774,6 @@ footer {
 
 .path-item span {
     word-break: break-all;
-    margin-right: 1rem;
 }
 
 .path-item .copy-path-btn {
@@ -742,6 +786,7 @@ footer {
     font-size: 12px;
     transition: all 0.2s;
     flex-shrink: 0;
+    margin-left: 1rem;
 }
 
 .path-item:hover .copy-path-btn {
@@ -878,6 +923,32 @@ html[data-theme='dark'] .status-badge.not-working {
     margin: 0;
     font-size: 14px;
     line-height: 1.5;
+}
+
+.weather-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.weather-icon-container {
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.weather-icon-container svg {
+    width: 100%;
+    height: 100%;
+    stroke: var(--text-secondary);
+	transition: stroke 0.2s;
+}
+
+.path-item:hover .weather-icon-container svg {
+    stroke: var(--accent-color);
 }
 
 
