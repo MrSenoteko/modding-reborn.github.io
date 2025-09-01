@@ -73,6 +73,41 @@ html[data-theme='one_ru'] {
     --lua-variable: #e06c75;
 }
 
+html[lang="en"] .lang-ru { display: none; }
+html[lang="ru"] .lang-en { display: none; }
+html[lang="en"] .lang-en, html[lang="ru"] .lang-ru { display: initial; }
+
+@keyframes fadeOutUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.lang-fade-out {
+    animation: fadeOutUp 0.2s ease-out forwards;
+}
+
+.lang-fade-in {
+    animation: fadeInUp 0.3s ease-in forwards;
+}
+
+
 html[data-theme='one_ru'] #toc-nav-container a.active {
     color: var(--accent-color);
     border-left-color: var(--accent-color);
@@ -320,31 +355,21 @@ header {
     gap: 0.75rem;
     margin-left: auto;
 }
-.header-nav a, .theme-toggle, .hamburger-btn, .update-info-btn {
+.header-nav a {
     color: var(--text-secondary);
     text-decoration: none;
-    font-weight: 500;
-    font-size: 14px;
     transition: color 0.2s, transform 0.2s;
     display: flex;
     align-items: center;
-    gap: 4px;
+    padding: 4px;
 }
-.header-nav a:hover, .theme-toggle:hover, .hamburger-btn:hover, .update-info-btn:hover {
+.header-nav a:hover {
     color: var(--text);
     transform: scale(1.1);
 }
 .header-nav .icon { width: 24px; height: 24px; stroke: currentColor; }
 .header-nav a .icon { stroke: none; fill: currentColor; }
-
-.theme-toggle, .hamburger-btn, .update-info-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-}
-.theme-toggle .icon { stroke: currentColor; fill: currentColor; }
-.hamburger-btn { display: none; z-index: 102; }
+.hamburger-btn { display: none; z-index: 102; background: none; border: none; color: var(--text-secondary); }
 
 .sidebar {
     height: 100vh;
@@ -358,9 +383,74 @@ header {
     -webkit-backdrop-filter: blur(10px);
     transform: translateX(-100%);
     animation: slideInLeft 0.5s 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    padding-top: 60px;
 }
 
-.sidebar-toc { padding-top: 80px; font-size: 14px; }
+.sidebar-controls {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.sidebar-control-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.6rem 0.5rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    text-align: left;
+}
+.sidebar-control-btn:hover {
+    background-color: var(--link-hover-bg);
+    color: var(--text);
+}
+.sidebar-control-icon {
+    margin-right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sidebar-control-icon .icon {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+}
+.sidebar-control-btn#update-info-btn .icon {
+    fill: currentColor;
+}
+.sidebar-control-text {
+    flex-grow: 1;
+}
+.lang-toggle-text {
+    font-weight: 700;
+    font-size: 13px;
+    background-color: var(--link-hover-bg);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.theme-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.theme-icon-wrapper .icon {
+    width: 20px;
+    height: 20px;
+}
+
+.sidebar-toc { font-size: 14px; }
 #toc-nav-container { list-style: none; }
 #toc-nav-container a {
     display: block;
@@ -739,8 +829,10 @@ html[data-theme='dark'] .status-badge.buggy { background-color: #332b00; color: 
 @media (max-width: 768px) {
     .layout-grid { grid-template-columns: 1fr; grid-template-areas: "header" "content"; }
     .content-wrapper { padding: 0 1.5rem; }
-    .logo, .header-nav a { display: none; }
-    .header-nav a[title="Telegram Channel"], .header-nav a[title="Lua Documentation"] { display: flex; }
+    .logo, .header-nav a:not([title-en="Lua Documentation"]):not([title-en="Telegram Channel"]) { display: none; }
+    .header-nav a {
+        display: flex;
+    }
     .hamburger-btn { display: flex; }
     .search-wrapper { max-width: calc(100% - 150px); }
     .sidebar-toc {
@@ -753,6 +845,7 @@ html[data-theme='dark'] .status-badge.buggy { background-color: #332b00; color: 
         z-index: 102;
         border-right: 1px solid var(--border);
         box-shadow: 4px 0 15px var(--shadow);
+        padding-top: 0;
     }
     .sidebar-toc.active { transform: translateX(0); }
     h2 { font-size: 1.8rem; }
